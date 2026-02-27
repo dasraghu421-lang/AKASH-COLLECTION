@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AKASH COLLECTION - Everything you need available here</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#1f2937;
+  --accent:#2563eb;
+  --light:#f9fafb;
+  --success:#16a34a;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{background:var(--light);color:#111;}
+header{
+  background:var(--primary);
+  color:#fff;
+  padding:20px;
+  text-align:center;
+}
+header h1{font-size:22px;}
+header p{font-size:14px;color:#d1d5db;}
+.hero img{
+  width:100%;
+  height:200px;
+  object-fit:cover;
+}
+.filters{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:15px;
+}
+.filters button{
+  padding:8px 14px;
+  border:none;
+  border-radius:20px;
+  background:#e5e7eb;
+  cursor:pointer;
+}
+.filters button.active,
+.filters button:hover{
+  background:var(--accent);
+  color:#fff;
+}
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:15px;
+  padding:15px;
+}
+.card{
+  background:#fff;
+  border-radius:12px;
+  padding:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+  transition:.3s;
+}
+.card:hover{transform:translateY(-4px);}
+.card img{
+  width:100%;
+  height:140px;
+  object-fit:cover;
+  border-radius:10px;
+}
+.card h3{font-size:14px;margin:8px 0;}
+.price{font-weight:600;color:var(--accent);}
+.card button{
+  width:100%;
+  margin-top:8px;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  background:var(--accent);
+  color:#fff;
+  cursor:pointer;
+}
+.cart-btn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:var(--accent);
+  color:#fff;
+  padding:12px 15px;
+  border-radius:50px;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,.2);
+}
+.cart-btn span{
+  background:#fff;
+  color:var(--accent);
+  padding:2px 7px;
+  border-radius:50%;
+  margin-left:5px;
+}
+.modal{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,.4);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+.modal-content{
+  background:#fff;
+  width:95%;
+  max-width:500px;
+  max-height:90vh;
+  overflow:auto;
+  padding:20px;
+  border-radius:12px;
+}
+.modal h2{margin-bottom:10px;}
+.cart-item{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+  font-size:14px;
+}
+.qty-btn{
+  padding:2px 8px;
+  margin:0 3px;
+  cursor:pointer;
+  border:1px solid #ddd;
+}
+.remove{
+  color:red;
+  cursor:pointer;
+}
+.total{
+  font-weight:600;
+  margin-top:10px;
+}
+form input, form textarea{
+  width:100%;
+  padding:8px;
+  margin:6px 0;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+form button{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  background:var(--success);
+  color:#fff;
+  margin-top:8px;
+}
+.whatsapp{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  background:#25d366;
+  color:#fff;
+  padding:12px 16px;
+  border-radius:50px;
+  text-decoration:none;
+  font-size:14px;
+}
+.confirmation{
+  text-align:center;
+  color:var(--success);
+  margin-top:10px;
+}
+@media(min-width:768px){
+  .hero img{height:300px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>AKASH COLLECTION</h1>
+<p>Everything you need available here</p>
+<p style="font-size:12px;">India, Kolkata | 📞 +91 9123036816</p>
+</header>
+
+<div class="hero">
+<img src="https://i.ibb.co/6JkM9gT/hero.jpg" alt="Shop Banner" loading="lazy">
+</div>
+
+<div class="filters">
+<button class="active" onclick="filterProducts('all')">All</button>
+<button onclick="filterProducts('Gadgets')">Gadgets</button>
+<button onclick="filterProducts('Items')">Items</button>
+</div>
+
+<div class="products" id="productList"></div>
+
+<div class="cart-btn" onclick="openCart()">🛒 Cart <span id="cartCount">0</span></div>
+
+<a class="whatsapp" href="https://wa.me/919123036816" target="_blank">Chat on WhatsApp</a>
+
+<div class="modal" id="cartModal">
+<div class="modal-content">
+<h2>Your Cart</h2>
+<div id="cartItems"></div>
+<div class="total" id="grandTotal"></div>
+<button onclick="openCheckout()">Place Order</button>
+<button onclick="closeCart()" style="background:#ccc;color:#000;margin-top:5px;">Close</button>
+
+<div id="checkoutForm" style="display:none;">
+<h2>Customer Details</h2>
+<form id="orderForm" action="https://formspree.io/f/xzdawpln" method="POST">
+<input type="text" name="Customer Name" placeholder="Your Name" required>
+<input type="tel" name="Phone Number" placeholder="Phone Number" required>
+<textarea name="Delivery Address" placeholder="Delivery Address" required></textarea>
+<textarea name="Special Instructions" placeholder="Special Instructions (optional)"></textarea>
+<input type="hidden" name="Order Details" id="orderDetails">
+<button type="submit">Submit Order</button>
+</form>
+<div class="confirmation" id="confirmationMessage"></div>
+</div>
+</div>
+</div>
+
+<script>
+const products=[
+{
+id:1,
+name:"Portable Mini Air Cooler 500ml",
+price:799,
+category:"Gadgets",
+image:"https://i.ibb.co/3N0vJ3w/aircooler.jpg",
+desc:"Cool fresh air"
+}
+];
+
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+
+function renderProducts(filter="all"){
+const list=document.getElementById("productList");
+list.innerHTML="";
+products.filter(p=>filter==="all"||p.category===filter)
+.forEach(p=>{
+list.innerHTML+=`
+<div class="card">
+<img src="${p.image}" alt="${p.name}" loading="lazy">
+<h3>${p.name}</h3>
+<div class="price">₹${p.price}</div>
+<button onclick="addToCart(${p.id})">Add to Cart</button>
+</div>
+`;
+});
+}
+function filterProducts(cat){
+document.querySelectorAll(".filters button").forEach(b=>b.classList.remove("active"));
+event.target.classList.add("active");
+renderProducts(cat);
+}
+function addToCart(id){
+const item=cart.find(i=>i.id===id);
+if(item){item.qty++;}
+else{
+const product=products.find(p=>p.id===id);
+cart.push({...product,qty:1});
+}
+saveCart();
+}
+function saveCart(){
+localStorage.setItem("cart",JSON.stringify(cart));
+updateCartCount();
+}
+function updateCartCount(){
+document.getElementById("cartCount").innerText=cart.reduce((a,b)=>a+b.qty,0);
+}
+function openCart(){
+renderCart();
+document.getElementById("cartModal").style.display="flex";
+}
+function closeCart(){
+document.getElementById("cartModal").style.display="none";
+}
+function renderCart(){
+const container=document.getElementById("cartItems");
+container.innerHTML="";
+let total=0;
+cart.forEach(item=>{
+let subtotal=item.price*item.qty;
+total+=subtotal;
+container.innerHTML+=`
+<div class="cart-item">
+<div>
+${item.name}<br>
+₹${item.price} x 
+<button class="qty-btn" onclick="changeQty(${item.id},-1)">-</button>
+${item.qty}
+<button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+<br>Subtotal: ₹${subtotal}
+</div>
+<div class="remove" onclick="removeItem(${item.id})">✖</div>
+</div>
+`;
+});
+document.getElementById("grandTotal").innerText="Grand Total: ₹"+total;
+}
+function changeQty(id,delta){
+const item=cart.find(i=>i.id===id);
+item.qty+=delta;
+if(item.qty<=0)cart=cart.filter(i=>i.id!==id);
+saveCart();
+renderCart();
+}
+function removeItem(id){
+cart=cart.filter(i=>i.id!==id);
+saveCart();
+renderCart();
+}
+function openCheckout(){
+if(cart.length===0){alert("Cart is empty!");return;}
+document.getElementById("checkoutForm").style.display="block";
+let summary="Order Summary:\n";
+let total=0;
+cart.forEach(i=>{
+summary+=`${i.name} - Qty: ${i.qty} - ₹${i.price*i.qty}\n`;
+total+=i.price*i.qty;
+});
+summary+="\nGrand Total: ₹"+total;
+document.getElementById("orderDetails").value=summary;
+}
+document.getElementById("orderForm").addEventListener("submit",function(){
+localStorage.removeItem("cart");
+cart=[];
+updateCartCount();
+document.getElementById("confirmationMessage").innerHTML=
+"Order placed! AKASH COLLECTION will contact you on WhatsApp to confirm.<br><br><a href='https://wa.me/919123036816' target='_blank'>Click here to message us now</a>";
+});
+renderProducts();
+updateCartCount();
+</script>
+
+</body>
+</html>
